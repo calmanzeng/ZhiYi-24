@@ -1,0 +1,119 @@
+name: head_neck_exam
+display_name: 头颈部检查 (Head & Neck Exam)
+category: physical_exam
+exam_station: 2
+difficulty: basic
+version: 1.0.0
+description: 评估头颈部检查技术：眼球运动、瞳孔反射、颈部淋巴结触诊、甲状腺触诊、气管位置
+model:
+  type: mediapipe_pose
+  model_path: ''
+  num_poses: 1
+  min_detection_confidence: 0.5
+  min_tracking_confidence: 0.5
+landmarks:
+- id: 0
+  name: nose
+  type: face
+  required: true
+- id: 7
+  name: left_ear
+  type: face
+  required: false
+- id: 8
+  name: right_ear
+  type: face
+  required: false
+- id: 11
+  name: left_shoulder
+  type: shoulder
+  required: true
+- id: 12
+  name: right_shoulder
+  type: shoulder
+  required: true
+- id: 15
+  name: left_wrist
+  type: wrist
+  required: true
+- id: 16
+  name: right_wrist
+  type: wrist
+  required: true
+- id: 13
+  name: left_elbow
+  type: elbow
+  required: false
+- id: 14
+  name: right_elbow
+  type: elbow
+  required: false
+features:
+- name: hand_face_proximity
+  description: 手-面部距离
+  type: distance
+  weight: 0.3
+- name: hand_stability
+  description: 手部稳定性(近面部操作)
+  type: variance
+  weight: 0.3
+- name: bilateral_coordination
+  description: 双侧协调检查
+  type: correlation
+  weight: 0.2
+- name: movement_scope
+  description: 头颈区域覆盖
+  type: bounding_box
+  weight: 0.2
+metrics:
+- name: precision
+  display_name: 操作精准
+  unit: score
+  ideal_range:
+  - 85
+  - 100
+  weight: 0.3
+  target: 90
+  acceptable_range:
+  - 70
+  - 100
+- name: stability
+  display_name: 手部稳定
+  unit: score
+  ideal_range:
+  - 85
+  - 100
+  weight: 0.3
+  target: 90
+  acceptable_range:
+  - 70
+  - 100
+- name: coordination
+  display_name: 双侧协调
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.2
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+- name: thoroughness
+  display_name: 检查全面性
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.2
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+feedback:
+  default_rules: true
+min_detection_frames: 30
+data_collection:
+  enabled: true
+  store_raw_features: false
+  anonymize: true

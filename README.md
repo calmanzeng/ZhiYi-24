@@ -129,26 +129,34 @@ Camera → OpenCV → MediaPipe Pose (33 landmarks)
 
 
 
-## 🏗️ Skills Currently Implemented (16/24)
+## 🏗️ Skills Implemented (24/24) 🎉
 
-| # | Skill | Category | Station | Status |
-|:-:|------|:--------:|:-------:|:-----:|
-| 1 | 心肺复苏 (CPR) | Emergency | 3 | ✅ |
-| 2 | 缝合打结 (Suturing) | Surgical | 3 | ✅ |
-| 3 | 胸腔穿刺术 (Thoracentesis) | Procedural | 3 | ✅ |
-| 4 | 腰椎穿刺术 (Lumbar Puncture) | Procedural | 3 | ✅ |
-| 5 | 导尿术 (Catheterization) | Procedural | 3 | ✅ |
-| 6 | 气管插管术 (Intubation) | Emergency | 3 | ✅ |
-| 7 | 心肺叩诊 (Percussion) | Physical Exam | 2 | ✅ |
-| 8 | 无菌术 (Sterile Technique) | Surgical | 3 | ✅ |
-| 9 | **腹腔穿刺术 (Abdominal Paracentesis)** | Procedural | 3 | ✅ NEW |
-| 10 | **骨髓穿刺术 (Bone Marrow Puncture)** | Procedural | 3 | ✅ NEW |
-| 11 | **静脉穿刺术 (Venipuncture)** | Procedural | 3 | ✅ NEW |
-| 12 | **清创术 (Debridement)** | Surgical | 3 | ✅ NEW |
-| 13 | **骨折固定术 (Fracture Splinting)** | Emergency | 3 | ✅ NEW |
-| 14 | **换药术 (Dressing Change)** | Surgical | 3 | ✅ NEW |
-| 15 | **腹部触诊 (Abdominal Palpation)** | Physical Exam | 2 | ✅ NEW |
-| 16 | **吸氧术 (Oxygen Therapy)** | Procedural | 3 | ✅ NEW |
+| # | Skill | Category | Station |
+|:-:|------|--------:|:-------:|
+| 1 | 心肺复苏 (CPR) | Emergency | 3 |
+| 2 | 缝合打结 (Suturing) | Surgical | 3 |
+| 3 | 胸腔穿刺术 (Thoracentesis) | Procedural | 3 |
+| 4 | 腰椎穿刺术 (Lumbar Puncture) | Procedural | 3 |
+| 5 | 导尿术 (Catheterization) | Procedural | 3 |
+| 6 | 气管插管术 (Intubation) | Emergency | 3 |
+| 7 | 心肺叩诊 (Percussion) | Physical Exam | 2 |
+| 8 | 无菌术 (Sterile Technique) | Surgical | 3 |
+| 9 | 腹腔穿刺术 (Abdominal Paracentesis) | Procedural | 3 |
+| 10 | 骨髓穿刺术 (Bone Marrow Puncture) | Procedural | 3 |
+| 11 | 静脉穿刺术 (Venipuncture) | Procedural | 3 |
+| 12 | 清创术 (Debridement) | Surgical | 3 |
+| 13 | 骨折固定术 (Fracture Splinting) | Emergency | 3 |
+| 14 | 换药术 (Dressing Change) | Surgical | 3 |
+| 15 | 腹部触诊 (Abdominal Palpation) | Physical Exam | 2 |
+| 16 | 吸氧术 (Oxygen Therapy) | Procedural | 3 |
+| 17 | 一般检查 (General Physical Exam) | Physical Exam | 2 |
+| 18 | 头颈部检查 (Head & Neck Exam) | Physical Exam | 2 |
+| 19 | 胸部检查 (Chest Exam) | Physical Exam | 2 |
+| 20 | 神经系统检查 (Neurological Exam) | Physical Exam | 2 |
+| 21 | 脊柱四肢检查 (Spine & Extremities) | Physical Exam | 2 |
+| 22 | 吸痰术 (Sputum Suctioning) | Procedural | 3 |
+| 23 | 除颤术 (Defibrillation) | Emergency | 3 |
+| 24 | 胃管置入术 (NG Tube Insertion) | Procedural | 3 |
 
-**24 skills target, now 16 implemented (67%). Remaining 8: 病史采集(LLM), 病例分析(LLM), 一般检查, 头颈部检查, 胸部检查, 神经系统检查, 脊柱四肢, 吸痰术, 除颤术, 胃管置入**
+**All 24 clinical skills of 执业医师资格考试 are now supported! ✅**24 skills target, now 16 implemented (67%). Remaining 8: 病史采集(LLM), 病例分析(LLM), 一般检查, 头颈部检查, 胸部检查, 神经系统检查, 脊柱四肢, 吸痰术, 除颤术, 胃管置入**
 **

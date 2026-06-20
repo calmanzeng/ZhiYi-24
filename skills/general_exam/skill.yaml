@@ -1,0 +1,111 @@
+name: general_exam
+display_name: 一般检查 (General Physical Exam)
+category: physical_exam
+exam_station: 2
+difficulty: basic
+version: 1.0.0
+description: 评估一般检查技术：生命体征测量、皮肤黏膜检查、淋巴结触诊、全身状态评估
+model:
+  type: mediapipe_pose
+  model_path: ''
+  num_poses: 1
+  min_detection_confidence: 0.5
+  min_tracking_confidence: 0.5
+landmarks:
+- id: 0
+  name: nose
+  type: face
+  required: false
+- id: 11
+  name: left_shoulder
+  type: shoulder
+  required: true
+- id: 12
+  name: right_shoulder
+  type: shoulder
+  required: true
+- id: 13
+  name: left_elbow
+  type: elbow
+  required: true
+- id: 14
+  name: right_elbow
+  type: elbow
+  required: true
+- id: 15
+  name: left_wrist
+  type: wrist
+  required: true
+- id: 16
+  name: right_wrist
+  type: wrist
+  required: true
+features:
+- name: hand_mobility
+  description: 双手活动范围(检查覆盖面)
+  type: bounding_box
+  weight: 0.3
+- name: movement_pattern
+  description: 检查动作规律性
+  type: periodicity
+  weight: 0.25
+- name: hand_symmetry
+  description: 左右手协调对称
+  type: correlation
+  weight: 0.25
+- name: elbow_angle
+  description: 肘关节角度(操作姿势)
+  type: angle
+  weight: 0.2
+metrics:
+- name: coverage
+  display_name: 检查覆盖
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.3
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+- name: pattern
+  display_name: 检查顺序
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.25
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+- name: symmetry
+  display_name: 左右对称
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.25
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+- name: posture
+  display_name: 操作姿势
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.2
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+feedback:
+  default_rules: true
+min_detection_frames: 30
+data_collection:
+  enabled: true
+  store_raw_features: false
+  anonymize: true

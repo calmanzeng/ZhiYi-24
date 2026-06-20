@@ -1,0 +1,115 @@
+name: defibrillation
+display_name: 除颤术 (Defibrillation)
+category: emergency
+exam_station: 3
+difficulty: intermediate
+version: 1.0.0
+description: 评估除颤操作规范性：电极板放置、充电、放电、安全确认
+model:
+  type: mediapipe_pose
+  model_path: ''
+  num_poses: 1
+  min_detection_confidence: 0.5
+  min_tracking_confidence: 0.5
+landmarks:
+- id: 11
+  name: left_shoulder
+  type: shoulder
+  required: true
+- id: 12
+  name: right_shoulder
+  type: shoulder
+  required: true
+- id: 13
+  name: left_elbow
+  type: elbow
+  required: true
+- id: 14
+  name: right_elbow
+  type: elbow
+  required: true
+- id: 15
+  name: left_wrist
+  type: wrist
+  required: true
+- id: 16
+  name: right_wrist
+  type: wrist
+  required: true
+- id: 23
+  name: left_hip
+  type: hip
+  required: true
+- id: 24
+  name: right_hip
+  type: hip
+  required: true
+features:
+- name: paddle_position
+  description: 电极板放置位置(胸前/心尖)
+  type: landmark_position
+  weight: 0.3
+- name: arm_position
+  description: 手臂姿势(充电安全姿势)
+  type: angle
+  weight: 0.25
+- name: hand_symmetry
+  description: 双手协调
+  type: correlation
+  weight: 0.25
+- name: decisiveness
+  description: 操作决断力(动作速度)
+  type: velocity
+  weight: 0.2
+metrics:
+- name: placement
+  display_name: 电极板放置
+  unit: score
+  ideal_range:
+  - 85
+  - 100
+  weight: 0.3
+  target: 90
+  acceptable_range:
+  - 70
+  - 100
+- name: posture
+  display_name: 操作姿势
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.25
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+- name: coordination
+  display_name: 双手协调
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.25
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+- name: efficiency
+  display_name: 操作时效
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.2
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+feedback:
+  default_rules: true
+min_detection_frames: 30
+data_collection:
+  enabled: true
+  store_raw_features: false
+  anonymize: true

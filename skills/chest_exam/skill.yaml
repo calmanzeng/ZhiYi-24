@@ -1,0 +1,115 @@
+name: chest_exam
+display_name: 胸部检查 (Chest Exam)
+category: physical_exam
+exam_station: 2
+difficulty: intermediate
+version: 1.0.0
+description: 评估胸部检查技术：视诊、触诊、叩诊（已完成）、听诊、乳房检查
+model:
+  type: mediapipe_pose
+  model_path: ''
+  num_poses: 1
+  min_detection_confidence: 0.5
+  min_tracking_confidence: 0.5
+landmarks:
+- id: 11
+  name: left_shoulder
+  type: shoulder
+  required: true
+- id: 12
+  name: right_shoulder
+  type: shoulder
+  required: true
+- id: 13
+  name: left_elbow
+  type: elbow
+  required: true
+- id: 14
+  name: right_elbow
+  type: elbow
+  required: true
+- id: 15
+  name: left_wrist
+  type: wrist
+  required: true
+- id: 16
+  name: right_wrist
+  type: wrist
+  required: true
+- id: 23
+  name: left_hip
+  type: hip
+  required: false
+- id: 24
+  name: right_hip
+  type: hip
+  required: false
+features:
+- name: palpation_depth
+  description: 触诊按压力度变化
+  type: amplitude
+  weight: 0.25
+- name: coverage_pattern
+  description: 胸部区域检查模式
+  type: grid_coverage
+  weight: 0.3
+- name: hand_symmetry
+  description: 左右对称检查
+  type: correlation
+  weight: 0.25
+- name: elbow_range
+  description: 肘关节活动范围
+  type: range
+  weight: 0.2
+metrics:
+- name: technique
+  display_name: 检查手法
+  unit: score
+  ideal_range:
+  - 85
+  - 100
+  weight: 0.3
+  target: 90
+  acceptable_range:
+  - 70
+  - 100
+- name: coverage
+  display_name: 区域覆盖
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.3
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+- name: symmetry
+  display_name: 对称检查
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.25
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+- name: depth_control
+  display_name: 力度控制
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.15
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+feedback:
+  default_rules: true
+min_detection_frames: 30
+data_collection:
+  enabled: true
+  store_raw_features: false
+  anonymize: true

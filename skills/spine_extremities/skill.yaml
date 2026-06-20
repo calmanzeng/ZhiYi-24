@@ -1,0 +1,123 @@
+name: spine_extremities
+display_name: 脊柱四肢检查 (Spine & Extremities)
+category: physical_exam
+exam_station: 2
+difficulty: intermediate
+version: 1.0.0
+description: 评估脊柱四肢检查技术：脊柱弯曲度、活动度、四肢关节检查、肌力评估
+model:
+  type: mediapipe_pose
+  model_path: ''
+  num_poses: 1
+  min_detection_confidence: 0.5
+  min_tracking_confidence: 0.5
+landmarks:
+- id: 11
+  name: left_shoulder
+  type: shoulder
+  required: true
+- id: 12
+  name: right_shoulder
+  type: shoulder
+  required: true
+- id: 13
+  name: left_elbow
+  type: elbow
+  required: true
+- id: 14
+  name: right_elbow
+  type: elbow
+  required: true
+- id: 15
+  name: left_wrist
+  type: wrist
+  required: true
+- id: 16
+  name: right_wrist
+  type: wrist
+  required: true
+- id: 23
+  name: left_hip
+  type: hip
+  required: true
+- id: 24
+  name: right_hip
+  type: hip
+  required: true
+- id: 25
+  name: left_knee
+  type: knee
+  required: false
+- id: 26
+  name: right_knee
+  type: knee
+  required: false
+features:
+- name: vertical_scope
+  description: 上下范围(脊柱全长)
+  type: full_body_scope
+  weight: 0.3
+- name: hand_symmetry
+  description: 左右对称检查
+  type: correlation
+  weight: 0.25
+- name: bending_angle
+  description: 弯腰角度(脊柱活动度)
+  type: angle
+  weight: 0.25
+- name: range_of_motion
+  description: 关节活动度评估
+  type: range
+  weight: 0.2
+metrics:
+- name: coverage
+  display_name: 检查覆盖
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.3
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+- name: symmetry
+  display_name: 对称检查
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.25
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+- name: angle_accuracy
+  display_name: 角度评估
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.25
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+- name: technique
+  display_name: 检查手法
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.2
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+feedback:
+  default_rules: true
+min_detection_frames: 30
+data_collection:
+  enabled: true
+  store_raw_features: false
+  anonymize: true

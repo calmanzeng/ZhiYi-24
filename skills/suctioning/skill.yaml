@@ -1,0 +1,111 @@
+name: suctioning
+display_name: 吸痰术 (Sputum Suctioning)
+category: procedural
+exam_station: 3
+difficulty: intermediate
+version: 1.0.0
+description: 评估吸痰操作规范性：负压调节、插入深度、旋转提吸、无菌操作
+model:
+  type: mediapipe_pose
+  model_path: ''
+  num_poses: 1
+  min_detection_confidence: 0.5
+  min_tracking_confidence: 0.5
+landmarks:
+- id: 0
+  name: nose
+  type: face
+  required: true
+- id: 11
+  name: left_shoulder
+  type: shoulder
+  required: true
+- id: 12
+  name: right_shoulder
+  type: shoulder
+  required: true
+- id: 15
+  name: left_wrist
+  type: wrist
+  required: true
+- id: 16
+  name: right_wrist
+  type: wrist
+  required: true
+- id: 13
+  name: left_elbow
+  type: elbow
+  required: false
+- id: 14
+  name: right_elbow
+  type: elbow
+  required: false
+features:
+- name: hand_face_distance
+  description: 手-面距离
+  type: distance
+  weight: 0.3
+- name: hand_stability
+  description: 手部稳定性
+  type: variance
+  weight: 0.3
+- name: insertion_depth
+  description: 插入深度变化
+  type: displacement
+  weight: 0.25
+- name: rotational_motion
+  description: 旋转动作(提吸)
+  type: angular_velocity
+  weight: 0.15
+metrics:
+- name: positioning
+  display_name: 操作位置
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.3
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+- name: stability
+  display_name: 手部稳定
+  unit: score
+  ideal_range:
+  - 85
+  - 100
+  weight: 0.3
+  target: 90
+  acceptable_range:
+  - 70
+  - 100
+- name: technique
+  display_name: 操作技术
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.25
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+- name: smoothness
+  display_name: 动作流畅度
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.15
+  target: 85
+  acceptable_range:
+  - 60
+  - 100
+feedback:
+  default_rules: true
+min_detection_frames: 30
+data_collection:
+  enabled: true
+  store_raw_features: false
+  anonymize: true
