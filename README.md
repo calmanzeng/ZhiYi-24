@@ -4,20 +4,7 @@
 [![MediaPipe](https://img.shields.io/badge/MediaPipe-0.10+-green.svg)](https://developers.google.com/mediapipe)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> ⚠️ **此仓库为个人研究项目，目前缺乏足够的医疗操作数据源来精进模型算法。**
-> 如有任何交流意见、合作意向或数据资源，欢迎邮件联系：**keyneszeng@gmail.com**
-
-
-
-> 用 AI 替代考官的主观评分 — 基于 MediaPipe 姿态估计的 CPR 操作实时评估系统。
->
-> **纯 Python + 普通 USB 摄像头，零专用硬件，4 小时搭建。**
-
-## 🎬 30秒演示
-
-![CPR AI Scorer Demo](demo.gif)
-
-*正常 CPR → 故意加速 → 评分实时变化 → 恢复正常*
+> 用 AI 替代考官的主观评分 — 基于 MediaPipe 姿态估计的 CPR 操作实时评估系统
 
 ## 🎯 这是什么？
 
@@ -25,20 +12,20 @@
 
 这个项目是 **AI 驱动的客观技能评分系统** 的第一个 MVP，从最高频的 CPR（心肺复苏）操作开始：
 
-- 📹 **输入**: 普通 USB 摄像头 (720p) + 真人操作
-- 🧠 **AI**: MediaPipe Pose Landmarker (33 个身体关键点) → 手腕轨迹分析
-- 📊 **输出**: 按压频率 (CPM) + 节奏一致性 (CV%) + 深度指数 + 整体评分 (0-100) + 实时反馈
+- 📹 **输入**: 普通 USB 摄像头 + 真人操作
+- 🧠 **AI**: MediaPipe Pose Landmarker (33 个身体关键点)
+- 📊 **输出**: 按压频率 (CPM) + 节奏一致性 + 深度指数 + 整体评分 + 实时语音级反馈
 
-## 🚀 3 分钟跑起来
+## 🚀 5 分钟跑起来
 
 ```bash
-# 1. 安装依赖
+# 1. 安装
 pip install mediapipe opencv-python numpy
 
-# 2. 下载 AI 模型 (5.5 MB)
+# 2. 下载模型
 curl -L -o ~/.hermes/cache/pose_landmarker_lite.task   https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/latest/pose_landmarker_lite.task
 
-# 3. 运行
+# 3. 运行（需要摄像头）
 python mvp.py
 
 # 可选:
@@ -47,18 +34,16 @@ python mvp.py --output annotated.mp4          # 保存带标注输出
 python mvp.py --report session_report.json   # 导出 Session 报告
 ```
 
-**快捷键**: Q 退出 | R 重置评分 | S 保存报告
-
 ## 📊 评分标准
 
 | 维度 | 检测方式 | 满分条件 |
 |------|---------|----------|
-| **按压频率** | 手腕 Y 轴轨迹峰检测 → CPM | 100-120 CPM (target: 110) |
+| **按压频率** | 手腕 Y 轴轨迹峰检测 → CPM | 100-120 CPM |
 | **节奏一致性** | 峰间间隔变异系数 (CV%) | CV < 10% |
-| **深度指数** | 手腕位移幅度 (躯干高度归一化) | 稳定且有力 |
-| **整体评分** | 频率(50%) + 一致性(30%) + 深度(20%) | ≥ 85/100 → A 级 |
+| **深度指数** | 手腕位移幅度 (相对躯干高度归一化) | 稳定且有力 |
+| **整体评分** | 加权综合 (频率 50% + 一致性 30% + 深度 20%) | ≥ 85/100 |
 
-## 🖥️ 界面
+## 🖥️ 界面预览
 
 ```
 ┌─────────────────────────────────────┬──────────────┐
@@ -70,7 +55,7 @@ python mvp.py --report session_report.json   # 导出 Session 报告
 │          ╲        ╱                 │               │
 │           ○ Elbow ○                 │  Rate: 108 OK │
 │              ╲  ╱                   │  CV:   7.2%   │
-│              ●●●  ← Hands          │  Depth: 0.12  │
+│              ●●●  ← Hands           │  Depth: 0.12  │
 │              Compression            │               │
 │                                     │  ✅ Good rate │
 │                                     │  ✅ Steady    │
@@ -83,42 +68,41 @@ python mvp.py --report session_report.json   # 导出 Session 报告
 ## 🔧 技术架构
 
 ```
-USB Camera → OpenCV → MediaPipe Pose (33 landmarks)
-                            │
-                            ▼
-                 Wrist Trajectory Extraction
-                 (Y-axis, normalized by torso height)
-                            │
-                            ▼
-                 Peak Detection (pure NumPy)
-                            │
-                 ┌──────────┼──────────┐
-                 ▼          ▼          ▼
-              CPM Rate    CV%       Depth
-                 │          │          │
-                 └──────────┼──────────┘
-                            ▼
-                    Overall Score
-                            │
-                            ▼
-                 Real-time HUD Overlay
-                 (+ Trend Graph, Feedback)
+Camera → OpenCV → MediaPipe Pose (33 landmarks)
+                         │
+                         ▼
+              Wrist Trajectory Extraction
+              (Y-axis, normalized by torso height)
+                         │
+                         ▼
+              Peak Detection (pure NumPy)
+                         │
+              ┌──────────┼──────────┐
+              ▼          ▼          ▼
+           CPM Rate    CV%       Depth
+              │          │          │
+              └──────────┼──────────┘
+                         ▼
+                 Overall Score
+                         │
+                         ▼
+              Real-time HUD Overlay
+              (+ Trend Graph, Feedback)
 ```
 
-## 📦 零成本
+## 📦 零成本依赖
 
 | 组件 | 用途 | 费用 |
 |------|------|:--:|
 | MediaPipe | 人体姿态估计 (33 关键点) | 免费 |
-| OpenCV | 视频采集/显示/输出 | 免费 |
+| OpenCV | 视频采集/显示 | 免费 |
 | NumPy | 信号处理/峰检测 | 免费 |
 | USB 摄像头 | 输入设备 | ~¥50 |
-| **总计** | | **¥50** |
 
 ## 🗺️ 路线图
 
 - [x] CPR 按压频率 + 一致性 + 深度评分
-- [x] 实时 HUD + 趋势图 + 等级评定
+- [x] 实时 HUD + 趋势图
 - [x] Session 报告导出 (JSON)
 - [ ] 30:2 通气循环自动检测
 - [ ] 按压深度厘米级精确估计（参考物标定）
@@ -135,20 +119,34 @@ USB Camera → OpenCV → MediaPipe Pose (33 landmarks)
 - **医学院教学**: 标准化操作教学反馈
 - **护理培训**: CPR + 其他操作培训
 
-## 💼 商业潜力
+## 👥 目标受众
 
-| 产品形态 | 当前价格 | AI 升级后 | 增量 |
-|---------|:---:|:---:|:---:|
-| OSCE 考站 (硬件) | 50万/套 | 80-120万/套 | +60-140% |
-| 住培管理系统 (软件) | 10-20万/年 | 30-50万/年 | +150% |
-| AI 评分 SaaS | 0 | 15-30万/院/年 | 全新收入 |
+这个项目的目标是向以下三类企业展示"AI + 执医技能"的可行性：
+
+1. **医学教育平台**: 医视网/华医网/医博士 — 从内容分发升级为 AI 评分
+2. **模拟设备厂商**: 天堰科技/医模科技/弘联 — 从硬件制造升级为智能评分
+3. **AI 公司**: 科大讯飞/商汤 — 医疗场景的落地应用
 
 
 
+## 🏗️ Skills Currently Implemented (8/24)
+
+| # | Skill | Type | Station | Landmarks | Status |
+|:-:|------|:----:|:-------:|:---------:|:-----:|
+| 1 | 心肺复苏 (CPR) | Emergency | 3 | shoulders+writs+hips | ✅ v1.0 |
+| 2 | 缝合打结 (Suturing) | Surgical | 3 | shoulders+elbows+writs+fingers | ✅ v1.0 |
+| 3 | 胸腔穿刺术 (Thoracentesis) | Procedural | 3 | shoulders+writs+hips | ✅ v1.0 |
+| 4 | 腰椎穿刺术 (Lumbar Puncture) | Procedural | 3 | shoulders+hips+knees+writs | ✅ v1.0 |
+| 5 | 导尿术 (Catheterization) | Procedural | 3 | shoulders+elbows+writs | ✅ v1.0 |
+| 6 | 气管插管术 (Intubation) | Emergency | 3 | nose+shoulders+elbows+writs | ✅ v1.0 |
+| 7 | 心肺叩诊 (Percussion) | Physical Exam | 2 | shoulders+elbows+writs+fingers | ✅ v1.0 |
+| 8 | 无菌术 (Sterile Technique) | Surgical | 3 | shoulders+elbows+writs+fingers | ✅ v1.0 |
+
+**24 skills target, now 8 implemented (33%). Next priority: 缝合(已实现), 腹腔穿刺, 骨髓穿刺, 静脉穿刺, 清创术, 骨折固定, 换药术**
 ## 📄 License
 
-MIT — 开源免费，商用友好
+MIT
 
 ---
 
-**Made as a job-seeking / BD demo tool. 4 hours from idea to working MVP.**
+**Made as a job-seeking / BD demo tool. Not production software (yet).**

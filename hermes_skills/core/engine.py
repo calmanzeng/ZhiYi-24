@@ -10,6 +10,8 @@ import cv2
 from .registry import SkillRegistry
 from .data_hub import DataHub
 from ..ai.llm_tutor import LLMTutor, OfflineTutor
+from ..evolve.selftrain import SelfTrainEngine
+from ..evolve.abtest import ABTestEngine
 
 
 class SkillPipeline:
@@ -18,7 +20,9 @@ class SkillPipeline:
     def __init__(self, skill_name: str, skills_dir: str = "./skills",
                  data_hub: DataHub = None,
                  llm_provider: str = None, llm_api_key: str = None,
-                 llm_model: str = None, llm_base_url: str = None):
+                 llm_model: str = None, llm_base_url: str = None,
+                 enable_selftrain: bool = False,
+                 enable_abtest: bool = False):
         self.skill_name = skill_name
         self.skills_dir = skills_dir
         self.data_hub = data_hub or DataHub()
@@ -33,6 +37,19 @@ class SkillPipeline:
             self.llm_tutor = None
         
         self._metrics_history = []
+        
+        # 自训练引擎
+        self._selftrain = SelfTrainEngine() if enable_selftrain else None
+        
+        # A/B 测试引擎
+        self._abtest = ABTestEngine() if enable_abtest else None
+        
+        # 自进化统计
+        self._evolve_stats = {
+            "samples_collected": 0,
+            "models_trained": 0,
+            "ab_tests_run": 0,
+        }
         self._llm_feedback = ""
         
         # 加载技能
@@ -78,6 +95,19 @@ class SkillPipeline:
         self._running = True
         self._frame_count = 0
         self._metrics_history = []
+        
+        # 自训练引擎
+        self._selftrain = SelfTrainEngine() if enable_selftrain else None
+        
+        # A/B 测试引擎
+        self._abtest = ABTestEngine() if enable_abtest else None
+        
+        # 自进化统计
+        self._evolve_stats = {
+            "samples_collected": 0,
+            "models_trained": 0,
+            "ab_tests_run": 0,
+        }
         self._llm_feedback = ""
         
         ai_backend = self._init_ai_backend()
@@ -111,6 +141,12 @@ class SkillPipeline:
                     if len(self._metrics_history) > 30:
                         self._metrics_history.pop(0)
                     self.data_hub.save_metrics(self._session_id, metrics)
+                    
+                    # 自动收集训练样本（如果启用自训练）
+                    if self._selftrain and self._frame_count % 30 == 0:
+                        self._selftrain.collect_sample(
+                            self.skill_name, feature_history, metrics
+                        )
                     if on_metrics:
                         on_metrics(metrics)
                     
@@ -169,6 +205,19 @@ class SkillPipeline:
         self._frame_count = 0
         self._latest_metrics = None
         self._metrics_history = []
+        
+        # 自训练引擎
+        self._selftrain = SelfTrainEngine() if enable_selftrain else None
+        
+        # A/B 测试引擎
+        self._abtest = ABTestEngine() if enable_abtest else None
+        
+        # 自进化统计
+        self._evolve_stats = {
+            "samples_collected": 0,
+            "models_trained": 0,
+            "ab_tests_run": 0,
+        }
         self._llm_feedback = ""
         print("🔄 评分已重置")
     

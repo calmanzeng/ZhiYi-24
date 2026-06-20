@@ -1,0 +1,107 @@
+name: sterile_technique
+display_name: 无菌术 (Sterile Technique / Hand Scrub)
+category: surgical
+exam_station: 3
+difficulty: basic
+version: 1.0.0
+description: 评估外科洗手、穿无菌衣、戴无菌手套的操作规范性
+model:
+  type: mediapipe_pose
+  model_path: ''
+  num_poses: 1
+  min_detection_confidence: 0.5
+  min_tracking_confidence: 0.5
+landmarks:
+- id: 11
+  name: left_shoulder
+  type: shoulder
+  required: true
+- id: 12
+  name: right_shoulder
+  type: shoulder
+  required: true
+- id: 13
+  name: left_elbow
+  type: elbow
+  required: true
+- id: 14
+  name: right_elbow
+  type: elbow
+  required: true
+- id: 15
+  name: left_wrist
+  type: wrist
+  required: true
+- id: 16
+  name: right_wrist
+  type: wrist
+  required: true
+- id: 19
+  name: left_index
+  type: finger
+  required: true
+- id: 20
+  name: right_index
+  type: finger
+  required: true
+features:
+- name: arm_elevation
+  description: 手臂高度(洗手后应举在腰部以上)
+  type: height
+  weight: 0.25
+- name: hand_distance
+  description: 手间距(穿无菌衣时手张开)
+  type: distance
+  weight: 0.25
+- name: movement_scope
+  description: 活动范围(无菌区维持)
+  type: bounding_box
+  weight: 0.25
+- name: elbow_angle
+  description: 肘关节角度
+  type: angle
+  weight: 0.25
+metrics:
+- name: posture
+  display: 无菌姿势
+  unit: score
+  ideal_range:
+  - 85
+  - 100
+  weight: 0.35
+- name: range_control
+  display: 范围控制
+  unit: score
+  ideal_range:
+  - 85
+  - 100
+  weight: 0.3
+- name: smoothness
+  display: 操作流畅性
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.2
+- name: speed
+  display: 完成速度
+  unit: score
+  ideal_range:
+  - 75
+  - 100
+  weight: 0.15
+feedback_rules:
+- condition: arm_elevation < 0.3
+  message: 手臂位置过低，洗手后手臂应保持在腰部以上
+  severity: critical
+- condition: hand_distance < 0.15
+  message: 双手间距过近，穿戴无菌手套时手应张开
+  severity: warning
+- condition: movement_scope > 0.8
+  message: 活动范围过大，可能污染无菌区
+  severity: warning
+min_detection_frames: 50
+data_collection:
+  enabled: true
+  store_raw_features: false
+  anonymize: true

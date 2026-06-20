@@ -1,0 +1,122 @@
+name: suturing
+display_name: 缝合打结 (Suturing & Knot Tying)
+category: surgical
+exam_station: 3
+difficulty: advanced
+version: 1.0.0
+description: 评估缝合与打结技术的规范性：持针角度、缝合间距、打结速度与对称性
+model:
+  type: mediapipe_pose
+  model_path: ''
+  num_poses: 1
+  min_detection_confidence: 0.5
+  min_tracking_confidence: 0.5
+landmarks:
+- id: 11
+  name: left_shoulder
+  type: shoulder
+  required: true
+- id: 12
+  name: right_shoulder
+  type: shoulder
+  required: true
+- id: 13
+  name: left_elbow
+  type: elbow
+  required: true
+- id: 14
+  name: right_elbow
+  type: elbow
+  required: true
+- id: 15
+  name: left_wrist
+  type: wrist
+  required: true
+- id: 16
+  name: right_wrist
+  type: wrist
+  required: true
+- id: 19
+  name: left_index
+  type: finger
+  required: false
+- id: 20
+  name: right_index
+  type: finger
+  required: false
+- id: 21
+  name: left_thumb
+  type: finger
+  required: false
+- id: 22
+  name: right_thumb
+  type: finger
+  required: false
+features:
+- name: hand_symmetry
+  description: 双手协调对称性
+  type: correlation
+  weight: 0.25
+- name: wrist_speed
+  description: 手腕运动速度(过快=不稳)
+  type: velocity
+  weight: 0.2
+- name: hand_distance
+  description: 双手距离变化模式
+  type: distance
+  weight: 0.2
+- name: elbow_angle
+  description: 肘关节角度(标准操作角)
+  type: angle
+  weight: 0.15
+- name: movement_smoothness
+  description: 运动平滑度(急停=不佳)
+  type: jerk
+  weight: 0.2
+metrics:
+- name: precision
+  display: 操作精度
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.3
+- name: coordination
+  display: 双手协调
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.25
+- name: speed
+  display: 操作速度
+  unit: knots_per_min
+  ideal_range:
+  - 8
+  - 15
+  weight: 0.2
+- name: stability
+  display: 手部稳定性
+  unit: score
+  ideal_range:
+  - 85
+  - 100
+  weight: 0.25
+feedback_rules:
+- condition: wrist_speed > 2.0
+  message: 腕部运动过快，建议放慢速度，精细操作
+  severity: warning
+- condition: hand_symmetry < 0.6
+  message: 双手配合不协调，尝试对称施力
+  severity: critical
+- condition: elbow_angle < 60 or elbow_angle > 150
+  message: 肘关节角度异常，检查操作姿势
+  severity: warning
+- condition: movement_smoothness > 0.3
+  message: 操作有顿挫感，练习更流畅的运动轨迹
+  severity: info
+min_detection_frames: 30
+data_collection:
+  enabled: true
+  store_raw_features: false
+  anonymize: true

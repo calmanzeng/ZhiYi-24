@@ -1,0 +1,107 @@
+name: catheterization
+display_name: 导尿术 (Urinary Catheterization)
+category: procedural
+exam_station: 3
+difficulty: intermediate
+version: 1.0.0
+description: 评估导尿操作规范性：无菌原则、插管角度、气囊注水、操作流畅度
+model:
+  type: mediapipe_pose
+  model_path: ''
+  num_poses: 1
+  min_detection_confidence: 0.5
+  min_tracking_confidence: 0.5
+landmarks:
+- id: 11
+  name: left_shoulder
+  type: shoulder
+  required: true
+- id: 12
+  name: right_shoulder
+  type: shoulder
+  required: true
+- id: 15
+  name: left_wrist
+  type: wrist
+  required: true
+- id: 16
+  name: right_wrist
+  type: wrist
+  required: true
+- id: 13
+  name: left_elbow
+  type: elbow
+  required: false
+- id: 14
+  name: right_elbow
+  type: elbow
+  required: false
+- id: 23
+  name: left_hip
+  type: hip
+  required: false
+- id: 24
+  name: right_hip
+  type: hip
+  required: false
+features:
+- name: hand_symmetry
+  description: 双手协调性
+  type: correlation
+  weight: 0.25
+- name: wrist_motion
+  description: 手腕运动模式(柔和/生硬)
+  type: smoothness
+  weight: 0.25
+- name: approach_angle
+  description: 插管角度
+  type: angle
+  weight: 0.25
+- name: steadiness
+  description: 操作稳定性
+  type: variance
+  weight: 0.25
+metrics:
+- name: sterile_technique
+  display: 无菌操作
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.3
+- name: smoothness
+  display: 操作流畅性
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.3
+- name: angle_score
+  display: 插管角度
+  unit: score
+  ideal_range:
+  - 80
+  - 100
+  weight: 0.2
+- name: confidence
+  display: 操作自信度
+  unit: score
+  ideal_range:
+  - 70
+  - 100
+  weight: 0.2
+feedback_rules:
+- condition: wrist_motion < 0.5
+  message: 操作生硬，导尿应轻柔推进
+  severity: warning
+- condition: hand_symmetry < 0.4
+  message: 双手配合不佳，一只手持导管，另一只固定
+  severity: info
+- condition: steadiness > 1.8
+  message: 手部不够稳定，可能会引起患者不适
+  severity: warning
+min_detection_frames: 40
+data_collection:
+  enabled: true
+  store_raw_features: false
+  anonymize: true
