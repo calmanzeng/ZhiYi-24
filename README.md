@@ -1,4 +1,4 @@
-# 🩺 ZhiYi-24 — 执医24项AI-Native智能教学评估系统
+# 🩺 ZhiYi24AI — 执医24项AI-Native智能教学评估系统
 
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
 [![MediaPipe](https://img.shields.io/badge/MediaPipe-0.10+-green.svg)](https://developers.google.com/mediapipe)
